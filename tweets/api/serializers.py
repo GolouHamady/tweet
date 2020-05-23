@@ -72,13 +72,14 @@ class TweetModelSerializers(serializers.ModelSerializer):
 
 
 	def get_did_like(self, obj):
-		# request = self.context.get("request")
-		request = obj
-		# import pdb; pdb.set_trace()
-		user = request.user
-		if user.is_authenticated:
-			if user in obj.liked.all():
-				return True
+		request = self.context.get("request")
+		try:
+			user = request.user
+			if user.is_authenticated:
+				if user in obj.liked.all():
+					return True
+		except:
+			pass
 		return False
 
 	def get_likes(self, obj):

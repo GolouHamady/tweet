@@ -51,8 +51,8 @@ class TweetManager(models.Manager):
 
 
 class Tweet(models.Model):
-	parent      = models.ForeignKey("self", blank=True, null=True, on_delete=models.PROTECT)
-	user  		= models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+	parent      = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE)
+	user  		= models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 	liked       = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked")
 	content  	= models.CharField(max_length=140, validators=[validate_content])
 	reply       = models.BooleanField(verbose_name="is reply ?", default=False)
@@ -69,6 +69,19 @@ class Tweet(models.Model):
 
 	class Meta:
 		ordering = ["-timestamp"]
+
+	def get_parent(self):
+		the_parent = self
+		if self.parent:
+			the_parent = self.parent
+		return the_parent
+
+	def get_children(self):
+		parent = self.get_parent()
+		qs = Tweet.objects.filter(parent=parent)
+		qs_parent = Tweet.objects.filter(pk=parent.pk)
+		qs = (qs | qs_parent)
+		return qs
 
 
 def tweet_save_receiver(sender, instance, created, *args, **kwargs):

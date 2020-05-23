@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load recommended %}
 
 {% block script %}
 
@@ -21,27 +21,20 @@
 		</a>
 	</p>
 	<hr/>
-	<h1>Following <small>{{ object.profile.get_following.count }}</small> </h1>
-	{% for user in object.profile.get_following %}
-	<a href='/profiles/{{user.username}}'>{{ user.username }}</a><br/>
-	{% empty %}
-	<h4>Not following this user</h4>
-	{% endfor %}
-
-	<h1>Followed by</h1>
+	<h3>Followed by</h3>
 	{% for profile in object.followed_by.all %}
 	<a href='/profiles/{{profile.user.username}}'>{{ profile.user.username }}</a><br/>
 	{% empty %}
 	<h4>Not followed by any user</h4>
 	{% endfor %}
-
+	<hr/>
 </div>
 
 <div class="col-sm-9">
 	<h1>Tweets</h1>
 	<div id="tweet-container" data-url='/api/{{ object.username }}/tweet'>
 	</div>
-	<a href="" id="loadmore">Load More tweet</a>
+	<a href="" id="loadmore">Voir plus de tweets</a>
 
 </div>
 

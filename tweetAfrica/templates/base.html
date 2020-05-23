@@ -20,6 +20,9 @@
       .grey-color{
         color: #ccc;
       }
+      .media-focus{
+        background-color: rgb(255, 255, 0, 0.22);
+      }
     </style>
 
   </head>
@@ -50,6 +53,7 @@
         var tweetList = [];
         var nextTweetUrl;
         var tweetContainer;
+ 
         if(tweetContainerId){
           tweetContainer = $("#" + tweetContainerId)
 
@@ -119,7 +123,7 @@
         })
 
         function updateHasLinks(){
-          $(".media-body").each(function(data){
+          $(".content").each(function(data){
             var hastagRegex = /(^|\s)#([\w\d-]+)/g
             var usernameRegex = /(^|\s)@([\w\d-]+)/g
             var currentHtml = $(this).html()
@@ -136,6 +140,19 @@
           var container ;
           var tweetContent ;
           var isReply = tweetValue.reply ;
+          var replyId = tweetValue.id;
+          if (tweetValue.parent){
+            replyId = tweetValue.parent.id
+          }
+
+          var openingContainerDiv = "<div class=\"media\">"
+
+          if(tweetValue.id == fetchOneID){
+            openingContainerDiv = "<div class=\"media media-focus\">"
+            setTimeout(function(){
+              $('.media-focus').css("background-color", "#fff")
+            }, 2000)
+          }
           
           if(tweetValue.parent && !isReply){
 
@@ -152,14 +169,14 @@
             verb = 'Unlike'
           }
 
-          tweetContent = "<span class='content'>" + tweetValue.content + "</span><br/>via <a href='" + tweetValue.user.url +"'>" + tweetValue.user.username + "</a> | " + tweetValue.date_display + " | " + "<a href='/tweets/" + tweetValue.id +"'> View </a>" + "<a class='retweetBtn' href='/tweet/" + tweetValue.id + "/retweet'>| Retweet </a>" + " | <a href='#' class='tweet-like' data-id='" + tweetValue.id + "''>" + verb + " (" + tweetValue.likes + ") </a>" + " | <a href='#' class='tweetReply' data-user='" + tweetValue.user.username  +" ' data-id='" + tweetValue.id + "''>Reply</a>"
+          tweetContent = "<span class='content'>" + tweetValue.content + "</span><br/>via <a href='" + tweetValue.user.url +"'>" + tweetValue.user.username + "</a> | " + tweetValue.date_display + " | " + "<a href='/tweets/" + tweetValue.id +"'> View </a>" + " |<a class='retweetBtn' href='/tweet/" + tweetValue.id + "/retweet'> Retweet </a>" + " | <a href='#' class='tweet-like' data-id='" + tweetValue.id + "''>" + verb + " (" + tweetValue.likes + ") </a>" + " | <a href='#' class='tweetReply' data-user='" + tweetValue.user.username  +" ' data-id='" + tweetValue.id + "''>Reply</a>"
 
           if(preContent){
 
-            container = "<div class=\"media\"><div class=\"media-body\"> "+ preContent + " "+ tweetContent + " </div></div><hr/>"
+            container = openingContainerDiv +"<div class=\"media-body\"> "+ preContent + " "+ tweetContent + " </div></div><hr/>"
 
           }else{
-            container = "<div class=\"media\"><div class=\"media-body\">"+ tweetContent + " </div></div><hr/>"
+            container = openingContainerDiv + "<div class=\"media-body\">"+ tweetContent + "</div></div> <hr/>"
           }
           return container
         }
@@ -231,13 +248,11 @@
             method:"GET",
             success: function(data){
               tweetList = data.results ;
-              console.log(data)
-/*              if(data.next){
+              if(data.next){
                 nextTweetUrl = data.next;
               }else{
                 $("#loadmore").css("display", "none")
-              }*/
-              
+              }
               parseTweets();
               updateHasLinks();
             },
@@ -317,7 +332,7 @@
     <script>
       $(document).ready(function(){
         var typingTimer;
-        var doneInterval = 800 ;
+        var doneInterval = 1000 ;
         var serachInput = $("#navbar-search-form input[type=text]");
         var searchQuery;
 
@@ -345,10 +360,6 @@
 
     </script>
 
-<!--     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-      crossorigin="anonymous"></script> -->
-    <!-- Popper.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>

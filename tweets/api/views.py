@@ -55,8 +55,33 @@ class TweetDetailAPIView(generics.ListAPIView):
 	def get_queryset(self, *args, **kwargs):
 		tweet_id = self.kwargs.get("pk")
 		qs = Tweet.objects.filter(pk=tweet_id)
+		if qs.exists and qs.count() == 1:
+			parent_obj = qs.first()
+			qs1 = parent_obj.get_children()
+			qs = (qs | qs1).distinct().extra(select={"parent_id_null": "parent_id IS NULL"})
+		return qs.order_by("-parent_id_null", "timestamp")
 
-		return qs
+
+class SearchTweetAPIView(generics.ListAPIView):
+	queryset = Tweet.objects.all().order_by("-timestamp")
+	serializer_class = TweetModelSerializers
+	pagination_class = StantardResultsPagination
+
+	def get_serializer_context(self, *args, **kwargs):
+		context = super(SearchTweetAPIView, self).get_serializer_context(*args, **kwargs)
+		context['request'] = self.request
+		return context
+
+	def get_queryset(self):
+		qs = self.queryset
+		query = self.request.GET.get("q", None)
+		if query is not None:
+			qs = qs.filter(
+					Q(content__icontains=query) |
+					Q(user__username__icontains=query)
+				)
+		return qs  
+
 
 
 class TweetListAPIView(generics.ListAPIView):

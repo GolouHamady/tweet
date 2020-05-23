@@ -45,6 +45,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'tweetAfrica.urls'
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL
 
 TEMPLATES = [
     {
@@ -74,7 +77,7 @@ DATABASES = {
     }
 }
 
-
+LOGIN_REDIRECT_URL =  '/'
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
