@@ -1,5 +1,5 @@
 import os
-
+import dj_database_url
 from os.path import dirname, abspath, join
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -79,6 +79,9 @@ DATABASES = {
     }
 }
 
+DATABASES['default'] = dj_database_url.config()
+
+
 LOGIN_REDIRECT_URL =  '/'
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -126,7 +129,4 @@ MEDIA_URL = '/media/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-HEALTH_CHECKS = {
-    'db': 'django_healthchecks.contrib.check_database',
-    'cache': 'django_healthchecks.contrib.check_cache_default',
-}
+
