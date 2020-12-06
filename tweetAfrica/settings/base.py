@@ -9,7 +9,7 @@ BASE_DIR = dirname(dirname(abspath(__file__)))
 SECRET_KEY = 'm&noy^04eu!s6ed3%yaxy%-wuz_+r$mqnr06x=)7b3m5o@vev0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['africatweet.herokuapp.com']
 
